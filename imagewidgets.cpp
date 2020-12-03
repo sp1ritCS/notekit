@@ -185,3 +185,29 @@ int CLatexWidget::GetBaseline()
 }
 
 #endif
+
+CMimeWidget::CMimeWidget(Glib::RefPtr<Gdk::Window> wnd, Glib::ustring path) : CImageWidget(wnd) {
+    printf("MimeWidget");
+    SetSize(128,16);
+	baseline=0;
+
+	image_ctx->set_source_rgb(1,0,0);
+	image_ctx->set_font_size(10);
+	image_ctx->move_to(0,14);
+	image_ctx->show_text("MimeWidget");
+
+	image_ctx->fill();
+}
+CMimeWidget::~CMimeWidget()
+{
+}
+
+void CMimeWidget::Redraw()
+{
+
+}
+
+int CMimeWidget::GetBaseline()
+{
+	return baseline;
+}

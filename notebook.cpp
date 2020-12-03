@@ -417,7 +417,7 @@ Gtk::TextIter CNotebook::PopIter()
 }
 
 void CNotebook::RenderToWidget(Glib::ustring wtype, Gtk::TextBuffer::iterator &start, Gtk::TextBuffer::iterator &end) 
-{
+{   printf("Widget type: %s", wtype);
 	if(wtype=="checkbox") {
 		Gtk::TextIter i=start;
 		++i;
@@ -522,6 +522,34 @@ void CNotebook::RenderToWidget(Glib::ustring wtype, Gtk::TextBuffer::iterator &s
 		
 	}
 #endif
+    else if(wtype=="mimewgt") {
+        Glib::RefPtr<Gtk::TextBuffer::ChildAnchor> anch;
+
+		if(!(anch=start.get_child_anchor())) {
+			Glib::RefPtr<Gtk::TextMark> mstart = sbuffer->create_mark(start,true);
+			auto s = Glib::IdleSource::create();
+			s->connect( [mstart,this]() {
+				Gtk::TextIter start = sbuffer->get_iter_at_mark(mstart);
+				sbuffer->delete_mark(mstart);
+
+				if(!start.get_child_anchor()) {
+					sbuffer->create_child_anchor(start);
+				}
+				return false;
+			});
+			s->attach();
+			// anch = sbuffer->create_child_anchor(start);
+		} else {
+			auto j = start; ++j;
+			sbuffer->remove_tag(tag_hidden,start,j);
+
+			CMimeWidget *d = new CMimeWidget(get_window(Gtk::TEXT_WINDOW_TEXT),sbuffer->get_text(start,end,true));
+			Gtk::manage(d);
+			sbuffer->apply_tag(GetBaselineTag(d->GetBaseline()),start,j);
+			add_child_at_anchor(*d,anch);
+			d->show();
+		}
+    }
 }
 
 Glib::RefPtr<Gtk::TextTag> CNotebook::GetBaselineTag(int baseline)

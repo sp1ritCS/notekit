@@ -185,6 +185,15 @@
 
         <context ref="latex"/>
 
+        <context ref="mimewgt"/>
+
+      </include>
+    </context>
+
+    <context id="mimewgt" class="prox" style-ref="list-marker">
+      <match>(?&lt;=&amp;\()([a-zA-Z0-9_.-/~@]+)+(?=\))</match>
+      <include>
+        <context sub-pattern="2" class="invisible"/>
       </include>
     </context>
 
@@ -261,7 +270,7 @@
         <context ref="asterisks-strong-emphasis"/>
         <context ref="backslash-escape"/>
         <context ref="line-break"/>
-
+        <context ref="mimewgt"/>
         <context ref="latex"/>
 
       </include>
@@ -488,7 +497,7 @@
         <context ref="line-break"/>
 
         <context ref="latex"/>
-
+        <context ref="mimewgt"/>
       </include>
     </context>
 

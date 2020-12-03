@@ -48,4 +48,16 @@ public:
 
 #endif
 
+class CMimeWidget : public CImageWidget {
+public:
+  CMimeWidget(Glib::RefPtr<Gdk::Window> wnd, Glib::ustring source);
+  virtual ~CMimeWidget();
+
+  Glib::ustring source;
+
+  virtual void Redraw();
+  int baseline;
+  virtual int GetBaseline();
+};
+
 #endif
