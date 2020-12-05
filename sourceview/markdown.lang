@@ -190,7 +190,7 @@
       </include>
     </context>
 
-    <context id="mimewgt" class="prox mimewgt">
+    <context id="mimewgt" class="prox mimewgt" style-ref="list-marker">
       <match>(&#xFFFC;?)&amp;\(([a-zA-Z0-9_.-/~@]+)\)</match>
       <include>
         <context sub-pattern="0" class="invisible"/>
