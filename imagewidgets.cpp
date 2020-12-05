@@ -186,16 +186,35 @@ int CLatexWidget::GetBaseline()
 #endif
 
 CMimeWidget::CMimeWidget(Glib::RefPtr<Gdk::Window> wnd, Glib::ustring match) : CImageWidget(wnd) {
-    Glib::ustring path = match.substr(2, match.length() - 3);
-    printf("MimeWidget: %s\n", path.c_str());
-    SetSize(128,16);
-	baseline=0;
+    std::filesystem::path path{match.substr(2, match.length() - 3)};
+    bool exists = std::filesystem::exists(path);
+    std::string filename = exists && path.has_filename() ? path.filename().u8string() : "Invalid File";
+    SetSize(0,64);
+	baseline=26;
 
-	image_ctx->set_source_rgb(1,0,0);
-	image_ctx->set_font_size(10);
-	image_ctx->move_to(0,14);
-	image_ctx->show_text("MimeWidget");
-
+    image_ctx->select_font_face("sans-serif", Cairo::FONT_SLANT_NORMAL, Cairo::FONT_WEIGHT_BOLD);
+	image_ctx->set_font_size(32);
+    Cairo::TextExtents stre;
+	image_ctx->get_text_extents(filename, stre);
+    float potx = (8*2 + 48) + stre.width + 12;
+    SetSize(potx,64);
+	image_ctx->set_source_rgb(0, 0, 0);
+	image_ctx->rectangle(8, 7, 48, 48);
+	//image_ctx->rectangle(0, 0, w-1, 63); //Debug only?
+	/*image_ctx->move_to(0, h/2);
+	image_ctx->line_to(w, h/2);
+	image_ctx->close_path();*/
+	image_ctx->stroke();
+	if (exists) {
+	    image_ctx->set_source_rgb(0.24,0.24,0.24);
+	} else {
+	    image_ctx->set_source_rgb(0.901960784,0.223529412,0.274509804);
+	}
+	image_ctx->move_to(48+8*2, h/2 + stre.height/3);
+	image_ctx->select_font_face("sans-serif", Cairo::FONT_SLANT_NORMAL, Cairo::FONT_WEIGHT_NORMAL);
+	image_ctx->set_font_size(32);
+	//printf("Height: %d, TextH: %f, TextYB: %f, TextYA: %f\n", h, stre.height, stre.y_bearing, stre.y_advance);
+	image_ctx->show_text(filename);
 	image_ctx->fill();
 }
 CMimeWidget::~CMimeWidget()

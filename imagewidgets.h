@@ -4,6 +4,7 @@
 #include "config.h"
 
 #include <gtkmm.h>
+#include <filesystem>
 
 class CImageWidget : public Gtk::DrawingArea
 {
