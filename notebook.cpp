@@ -416,8 +416,7 @@ Gtk::TextIter CNotebook::PopIter()
 	return ret;
 }
 
-void CNotebook::RenderToWidget(Glib::ustring wtype, Gtk::TextBuffer::iterator &start, Gtk::TextBuffer::iterator &end) 
-{   printf("Widget type: %s", wtype);
+void CNotebook::RenderToWidget(Glib::ustring wtype, Gtk::TextBuffer::iterator &start, Gtk::TextBuffer::iterator &end) {
 	if(wtype=="checkbox") {
 		Gtk::TextIter i=start;
 		++i;
@@ -633,8 +632,9 @@ void CNotebook::on_enter_region(Gtk::TextBuffer::iterator &start, Gtk::TextBuffe
 	Glib::ustring renderable_tags[]
 		= { "checkbox", 
 #if defined (HAVE_LASEM) || defined (HAVE_CLATEXMATH)
-		"latex"
+		"latex",
 #endif
+        "mimewgt"
 		};
 		
 	for(auto &s : renderable_tags) {
@@ -668,8 +668,9 @@ void CNotebook::on_leave_region(Gtk::TextBuffer::iterator &start, Gtk::TextBuffe
 	Glib::ustring renderable_tags[]
 		= { "checkbox", 
 #if defined (HAVE_LASEM) || defined (HAVE_CLATEXMATH)
-		"latex"
+		"latex",
 #endif
+        "mimewgt"
 		};
 		
 	for(auto &s : renderable_tags) {

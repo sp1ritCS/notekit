@@ -120,7 +120,7 @@ using namespace tex;
 CLatexWidget::CLatexWidget(Glib::RefPtr<Gdk::Window> wnd, Glib::ustring text, Gdk::RGBA fg) : CImageWidget(wnd)
 {	
 	source=text;
-
+    printf("TexWidget: %s\n", text.c_str());
 	unsigned int clr;
 	clr=0xff000000|int(fg.get_red()*255)<<16|int(fg.get_green()*255)<<8|int(fg.get_blue()*255);
 	
@@ -187,7 +187,7 @@ int CLatexWidget::GetBaseline()
 #endif
 
 CMimeWidget::CMimeWidget(Glib::RefPtr<Gdk::Window> wnd, Glib::ustring path) : CImageWidget(wnd) {
-    printf("MimeWidget");
+    printf("MimeWidget: %s\n", path.c_str());
     SetSize(128,16);
 	baseline=0;
 

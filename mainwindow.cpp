@@ -148,6 +148,14 @@ int mkdirp(std::string dir)
 /* Half-baked interpretation of XDG spec */
 void CMainWindow::CalculatePaths()
 {
+    char *devel = getenv("NK_DEVEL");
+    if(devel) {
+		fprintf(stderr,"INFO: Development mode set. Will operate in current working directory.\n");
+		config_path="notesbase";
+		default_base_path="notesbase";
+		data_path=".";
+		return;
+	}
 	char *home = getenv("HOME");
 	if(!home || !*home) {
 		fprintf(stderr,"WARNING: Could not determine user's home directory! Will operate in current working directory.\n");
