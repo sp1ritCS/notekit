@@ -18,7 +18,7 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ~/cLaTeXMath/
-        key: ${{ runner.os }}-clatexmath
+        key: ${{ runner.os }}-clatexmath-17
     - name: Downloading dependencies 📥
       run: sudo apt-get install build-essential libfontconfig1-dev zlib1g-dev libjsoncpp-dev libgtksourceviewmm-3.0-dev libgtkmm-3.0-dev python3 python3-pip python3-setuptools
     - name: Download the latest version of Meson 🧰
