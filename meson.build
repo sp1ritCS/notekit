@@ -5,6 +5,9 @@ project('notekit', 'cpp',
 
 conf_data = configuration_data()
 conf_data.set('HAVE_CLATEXMATH', true)
+if get_option('BUILD_REPRODUCIBLE')
+	conf_data.set('BUILD_VERSION', meson.project_version())
+endif
 
 deps = [
 	dependency('gtkmm-3.0'),

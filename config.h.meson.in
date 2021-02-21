@@ -1,3 +1,4 @@
 // global config
 
 #mesondefine HAVE_CLATEXMATH
+#define BUILD_VERSION "@BUILD_VERSION@"

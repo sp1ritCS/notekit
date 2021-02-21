@@ -15,8 +15,11 @@ CMainWindow::CMainWindow(const Glib::RefPtr<Gtk::Application>& app) : Gtk::Appli
 	
 	// Load config.
 	LoadConfig();
-	
+	#ifdef BUILD_VERSION
+	printf("== This is notekit, version %s ==\n", BUILD_VERSION);
+	#else
 	printf("== This is notekit, built at " __TIMESTAMP__ ". ==\n");
+	#endif
 	printf("Detected paths:\n");
 	printf("Config: %s\n",config_path.c_str());
 	printf("Active notes path: %s\n",config["base_path"].asString().c_str());
