@@ -39,7 +39,7 @@ jobs:
         meson install -C _build
         popd
     - name: Configure 🔧
-      run: meson _build
+      run: meson _build -DBUILD_REPRODUCIBLE=true
     - name: Compile 🎲
       run: ninja -C _build
     - name: Compress build 📦
@@ -66,7 +66,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Configure 🔧
-      run: bash -c "$(rpm --eval '%meson')"
+      run: bash -c "$(rpm --eval '%meson -DBUILD_REPRODUCIBLE=true')"
     - name: Compile 🎲
       run: bash -c "$(rpm --eval '%meson_build')"
     - name: Compress build 📦
@@ -104,7 +104,7 @@ jobs:
         meson install -C _build --no-rebuild
         popd
     - name: Configure 🔧
-      run: arch-meson . _build
+      run: arch-meson . _build -DBUILD_REPRODUCIBLE=true
     - name: Compile 🎲
       run: ninja -C _build
     - name: Compress build 📦

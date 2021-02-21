@@ -45,7 +45,7 @@ jobs:
         sudo meson install -C _build
         popd
     - name: Configure 🔧
-      run: meson _build
+      run: meson _build -DBUILD_REPRODUCIBLE=true
     - name: Compile 🎲
       run: ninja -C _build
     - name: Compress build artifacts 📦
