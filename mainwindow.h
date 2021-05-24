@@ -6,6 +6,7 @@
 #include <gtkmm.h>
 
 #include "about.h"
+#include "changelog.h"
 #include "notebook.h"
 #include "navigation.h"
 
@@ -95,6 +96,7 @@ protected:
 	bool navigation = true;
 	Glib::RefPtr<Gio::SimpleAction> export_action = add_action("export", sigc::mem_fun(this,&CMainWindow::FetchAndExport));
 	Glib::RefPtr<Gio::SimpleAction> pref_action = add_action("pref", sigc::mem_fun(this,&CMainWindow::RunPreferenceDiag));
+	Glib::RefPtr<Gio::SimpleAction> changelog_action = add_action("changelog", sigc::mem_fun(this,&CMainWindow::show_update_diag));
 	Glib::RefPtr<Gio::SimpleAction> about_action = add_action("about", sigc::mem_fun(this,&CMainWindow::RunAboutDiag));
 	Glib::RefPtr<Gio::SimpleAction> sidebar_action = add_action_bool("sidebar", sigc::bind( sigc::mem_fun(this,&CMainWindow::on_action), "toggle-sidebar", WND_ACTION_TOGGLE_SIDEBAR, 1), &navigation);
 	Glib::RefPtr<Gio::SimpleAction> zen_action = add_action_bool("zen", sigc::bind( sigc::mem_fun(this,&CMainWindow::on_action), "toggle-zen", WND_ACTION_TOGGLE_ZEN, 1), zen);
@@ -122,6 +124,11 @@ protected:
 		{"zen", sigc::mem_fun(this,&CMainWindow::SettingZenUpdate)},
 		{"sidebar", sigc::mem_fun(this,&CMainWindow::SettingSidebarUpdate)}
 	};
+
+	void show_update_diag();
+	//Gtk::MessageDialog update_diag = ChangeLog;
+	//ChangeLog update_diag = ChangeLog::ChangeLog();
+	ChangeLog update_diag = ChangeLog(*this);
 };
 
 #endif // MAINWINDOW_H

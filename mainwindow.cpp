@@ -67,6 +67,7 @@ CMainWindow::CMainWindow(const Glib::RefPtr<Gtk::Application>& app) : Gtk::Appli
 	menu->append("_Export Page", "win.export");
 	menu->append("_Preferences", "win.pref");
 	menu->append("_Toggle Sidebar", "win.sidebar");
+	menu->append("_Changelog", "win.changelog");
 	menu->append("_About", "win.about");
 
 	/* set up header bar */	
@@ -157,6 +158,8 @@ CMainWindow::CMainWindow(const Glib::RefPtr<Gtk::Application>& app) : Gtk::Appli
 	idle_timer = Glib::signal_timeout().connect(sigc::mem_fun(this,&CMainWindow::on_idle),5000,Glib::PRIORITY_LOW);
 
 	printf("Current document: %s\n", settings->get_string("active-document").c_str());
+
+	show_update_diag();
 }
 
 int mkdirp(std::string dir)
@@ -697,4 +700,12 @@ bool CMainWindow::on_motion_notify(GdkEventMotion *e)
 	}
 	
 	return false;
+}
+
+void CMainWindow::show_update_diag() {
+    //update_diag->set_message("Hello World");
+    //update_diag.
+    //update_diag->set_hide_on_close(true);
+    //update_diag.signal_response().connect(sigc::hide(sigc::mem_fun(update_diag, &Gtk::Widget::hide)));
+    update_diag.show();
 }

@@ -14,7 +14,8 @@ deps = [
 	dependency('gtkmm-3.0'),
 	dependency('gtksourceviewmm-3.0'),
 	dependency('zlib'),
-	dependency('fontconfig')
+	dependency('fontconfig'),
+	dependency('tinyxml2')
 ]
 
 if get_option('clatexmath')
@@ -42,6 +43,7 @@ install_data('gnome/com.github.blackhole89.notekit.gschema.xml',
 
 executable('notekit',
 	'about.cpp',
+	'changelog.cpp',
 	'drawing.cpp',
 	'imagewidgets.cpp',
 	'main.cpp',

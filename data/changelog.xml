@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<releases>
+  <release version="0.1.0" date="2021-05-24">
+    <!-- The zero width space (U+200B) behind <markup> is intentional, due to the way tinyxml2's printer handles XML nodes -->
+    <markup>​
+<b>New features:</b>
+  • "Zen" mode - hide user interface while editing
+
+<b>Changes:</b>
+  • Moved from custom json to GSettings prefernces store. In order to
+    restore your settings, please invoke
+    <tt>notekit-migrate-gsettings [path/to/config.json]</tt> (depending
+    on your distribution, this might be split up in a seperate sub-packge)
+  • Moved from Gtk::Menu to Gio::Menu and Actions. This means you can now
+    trigger them with DBus.
+    </markup>
+  </release>
+  <release version="0.1.0" date="2021-05-24">
+    <!-- The zero width space (U+200B) behind <markup> is intentional, due to the way tinyxml2's printer handles XML nodes -->
+    <markup>​
+<b>New features:</b>
+  • "Zen" mode - hide user interface while editing
+
+<b>Changes:</b>
+  • Moved from custom json to GSettings prefernces store. In order to
+    restore your settings, please invoke
+    <tt>notekit-migrate-gsettings [path/to/config.json]</tt> (depending
+    on your distribution, this might be split up in a seperate sub-packge)
+  • Moved from Gtk::Menu to Gio::Menu and Actions. This means you can now
+    trigger them with DBus.
+    </markup>
+  </release>
+  <release version="0.1.0" date="2021-05-24">
+    <!-- The zero width space (U+200B) behind <markup> is intentional, due to the way tinyxml2's printer handles XML nodes -->
+    <markup>​
+<b>New features:</b>
+  • "Zen" mode - hide user interface while editing
+
+<b>Changes:</b>
+  • Moved from custom json to GSettings prefernces store. In order to
+    restore your settings, please invoke
+    <tt>notekit-migrate-gsettings [path/to/config.json]</tt> (depending
+    on your distribution, this might be split up in a seperate sub-packge)
+  • Moved from Gtk::Menu to Gio::Menu and Actions. This means you can now
+    trigger them with DBus.
+    </markup>
+  </release>
+  <release version="0.1.0" date="2021-05-24">
+    <!-- The zero width space (U+200B) behind <markup> is intentional, due to the way tinyxml2's printer handles XML nodes -->
+    <markup>​
+<b>New features:</b>
+  • "Zen" mode - hide user interface while editing
+
+<b>Changes:</b>
+  • Moved from custom json to GSettings prefernces store. In order to
+    restore your settings, please invoke
+    <tt>notekit-migrate-gsettings [path/to/config.json]</tt> (depending
+    on your distribution, this might be split up in a seperate sub-packge)
+  • Moved from Gtk::Menu to Gio::Menu and Actions. This means you can now
+    trigger them with DBus.
+    </markup>
+  </release>
+</releases>
