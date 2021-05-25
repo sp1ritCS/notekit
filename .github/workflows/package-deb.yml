@@ -14,6 +14,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Downloading dependencies 📥
-      run: sudo apt install build-essentials meson libfontconfig1-dev zlib1g-dev libgtksourceviewmm-3.0-dev libgtkmm-3.0-dev libtinyxml2-dev debhelper dpkg-dev
+      run: sudo apt install build-essential meson libfontconfig1-dev zlib1g-dev libgtksourceviewmm-3.0-dev libgtkmm-3.0-dev libtinyxml2-dev debhelper dpkg-dev
     - name: Running debhelper 🛠️
       run: dpkg-buildpackage -b -uc
