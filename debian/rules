@@ -20,5 +20,6 @@
 	dh $@
 
 override_dh_auto_configure:
+	meson wrap promote subprojects/clatexmath.wrap
 	dh_auto_configure -- \
 	--wrap-mode default
