@@ -17,5 +17,6 @@
 %:
 	rm -f Makefile
 	rm -f CMakeLists.txt
+	pwd
 	meson subprojects download
 	dh $@
