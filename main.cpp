@@ -11,6 +11,8 @@ int main (int argc, char *argv[])
 	
 	app->signal_activate().connect( [app,&mainwindow]() {
 			mainwindow=new CMainWindow(app);
+			app->set_app_menu(mainwindow->menu);
+			app->set_menubar(mainwindow->legacy);
 			app->add_window(*mainwindow);
 		} );
 	

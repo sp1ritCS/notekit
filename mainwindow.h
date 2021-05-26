@@ -38,6 +38,10 @@ public:
 	void FocusDocument();
 
 	typedef std::tuple<double, double, double, double> color_t;
+
+	Glib::RefPtr<Gio::Menu> menu = Gio::Menu::create();
+	Glib::RefPtr<Gio::Menu> legacy = Gio::Menu::create();
+
 protected:
 	//Signal handlers:
 	bool on_close(GdkEventAny* any_event);
@@ -84,7 +88,7 @@ protected:
 	
 	/* header */
 	Gtk::HeaderBar hbar;
-	Gtk::MenuButton appbutton;
+	//Gtk::MenuButton appbutton;
 	
 	Gtk::Button zenbtn;
 	bool zen = false;
@@ -98,19 +102,18 @@ protected:
 	Glib::RefPtr<Gio::SimpleAction> about_action = add_action("about", sigc::mem_fun(this,&CMainWindow::RunAboutDiag));
 	Glib::RefPtr<Gio::SimpleAction> sidebar_action = add_action_bool("sidebar", sigc::bind( sigc::mem_fun(this,&CMainWindow::on_action), "toggle-sidebar", WND_ACTION_TOGGLE_SIDEBAR, 1), &navigation);
 	Glib::RefPtr<Gio::SimpleAction> zen_action = add_action_bool("zen", sigc::bind( sigc::mem_fun(this,&CMainWindow::on_action), "toggle-zen", WND_ACTION_TOGGLE_ZEN, 1), zen);
-	Glib::RefPtr<Gio::Menu> menu = Gio::Menu::create();
-	Gtk::Menu appmenu;
-	
+
 	/* classic menu */
-	struct {
+	/*struct {
 		Gtk::VBox menu_box;
 		Gtk::MenuBar mbar;
-	} cm;
+	} cm;*/
 
 	Gtk::FileChooserButton *dir;
 
 	void SettingBasepathUpdate();
 	void SettingDocumentUpdate();
+	void SettingCsdUpdate();
 	void SettingZenUpdate();
 	void SettingSidebarUpdate();
 
@@ -118,6 +121,7 @@ protected:
 	settingmap_t settingmap {
 		{"base-path", sigc::mem_fun(this,&CMainWindow::SettingBasepathUpdate)},
 		{"active-document", sigc::mem_fun(this,&CMainWindow::SettingDocumentUpdate)},
+		{"csd", sigc::mem_fun(this,&CMainWindow::SettingCsdUpdate)},
 		{"colors", sigc::mem_fun(this,&CMainWindow::UpdateToolbarColors)},
 		{"zen", sigc::mem_fun(this,&CMainWindow::SettingZenUpdate)},
 		{"sidebar", sigc::mem_fun(this,&CMainWindow::SettingSidebarUpdate)}

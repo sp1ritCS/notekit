@@ -3,6 +3,9 @@
 #include <iostream>
 #include <fontconfig/fontconfig.h>
 #include <locale.h>
+#ifdef GDK_WINDOWING_X11
+#include <gdk/gdkx.h>
+#endif
 
 #include <stdlib.h>
 
@@ -68,18 +71,20 @@ CMainWindow::CMainWindow(const Glib::RefPtr<Gtk::Application>& app) : Gtk::Appli
 	menu->append("_Preferences", "win.pref");
 	menu->append("_Toggle Sidebar", "win.sidebar");
 	menu->append("_About", "win.about");
+	legacy->append_submenu("View", menu);
 
 	/* set up header bar */	
 	hbar.set_show_close_button(true);
 	hbar.set_title("NoteKit");
-	appbutton.set_image_from_icon_name("accessories-text-editor", Gtk::ICON_SIZE_BUTTON, true);
+	set_icon_name("accessories-text-editor");
+	/*appbutton.set_image_from_icon_name("accessories-text-editor", Gtk::ICON_SIZE_BUTTON, true);
 	appbutton.set_use_popover(true);
-	appbutton.set_menu_model(menu);
+	appbutton.set_menu_model(menu);*/
 
 	zenbtn.set_image_from_icon_name("maximize-symbolic");
 	zenbtn.signal_clicked().connect( sigc::bind( sigc::mem_fun(this,&CMainWindow::on_action), "toggle-zen", WND_ACTION_TOGGLE_ZEN, 1 ));
 
-	hbar.pack_start(appbutton);
+	//hbar.pack_start(appbutton);
 	hbar.pack_end(zenbtn);
 	set_titlebar(hbar);
 
@@ -126,17 +131,16 @@ CMainWindow::CMainWindow(const Glib::RefPtr<Gtk::Application>& app) : Gtk::Appli
 	ACTION("next-note",WND_ACTION_NEXT_NOTE,1);
 	ACTION("prev-note",WND_ACTION_PREV_NOTE,1);
 	
-	/* add the top-level layout */
-	Glib::RefPtr<Gio::Menu> legacy = Gio::Menu::create();
-	legacy->append_submenu("View", menu);
-	cm.mbar = Gtk::MenuBar(legacy);
-	cm.menu_box.pack_start(cm.mbar,Gtk::PACK_SHRINK);
-	cm.menu_box.pack_start(split);
-	add(cm.menu_box);
+	add(split);
+
+	settings->bind("csd", property_show_menubar(), Gio::SettingsBindFlags::SETTINGS_BIND_INVERT_BOOLEAN);
+	settings->bind("csd", property_decorated());
+
+	split.show_all();
+	zenbtn.show_all();
+	show();
 	
-	settings->bind("csd", cm.mbar.property_visible(), Gio::SettingsBindFlags::SETTINGS_BIND_INVERT_BOOLEAN);
-	show_all();
-	
+	SettingCsdUpdate();
 	SettingSidebarUpdate();
 	SettingZenUpdate();
 
@@ -149,7 +153,7 @@ CMainWindow::CMainWindow(const Glib::RefPtr<Gtk::Application>& app) : Gtk::Appli
 	//} else {
 	SettingChange("active-document");
 	//}
-	
+
 	close_handler = this->signal_delete_event().connect( sigc::mem_fun(this, &CMainWindow::on_close) );
 	
 	signal_motion_notify_event().connect(sigc::mem_fun(this,&CMainWindow::on_motion_notify),false);
@@ -547,6 +551,20 @@ void CMainWindow::SettingDocumentUpdate() {
 	SetupDocumentWindow(filename);
 
 	g_free(buf);
+}
+
+void CMainWindow::SettingCsdUpdate() {
+    bool state = settings->get_boolean("csd");
+    #ifdef GDK_WINDOWING_X11
+      if (GDK_IS_X11_DISPLAY (gdk_display_get_default())) {
+          auto atom = gdk_atom_intern("_MOTIF_WM_HINTS", false);
+          long hints[5] = { 2, 0, (int)!state, 0, 0};
+          gdk_property_change(gtk_widget_get_window(GTK_WIDGET(this->gobj())), atom, atom, 32, GDK_PROP_MODE_REPLACE, (unsigned char *)hints, 5);
+        }
+      else
+    #endif
+    // TODO: here is space for xdg-decoration, any maybe support for w32 & cocoa
+    return;
 }
 
 void CMainWindow::SettingZenUpdate() {
