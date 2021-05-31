@@ -1,0 +1,5 @@
+workflow:
+    steps:
+        - branch_package:
+            source_project: home:sp1rit:testing:notekit
+            source_package: notekit
