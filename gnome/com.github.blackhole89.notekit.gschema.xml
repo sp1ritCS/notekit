@@ -37,5 +37,12 @@
 			]</default>
 			<summary>An array of selected colors specified as a tuple of four doubles, specifying RGBA values between 0 and 1. Each item represents one button within the toolbar.</summary>
 		</key>
+		<key name="snippets" type="a(ss)">
+			<default>[
+				("Quadratic formula", "$x_{1,2}=\\frac{-b\\pm\\sqrt{b^2-4ac}}{2a}$"),
+				("\\vect def", "$\\newcommand{\\vect}[3]{\\begin{pmatrix}{#1}\\\\{#2}\\\\{#3}\\end{pmatrix}}$")
+			]</default>
+			<summary>Quick insert snippets from the context menu</summary>
+		</key>
 	</schema>
 </schemalist>

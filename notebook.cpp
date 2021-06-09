@@ -4,6 +4,7 @@
 #include "notebook_highlight.hpp"
 #include "imagewidgets.h"
 
+#include <glibmm/i18n.h>
 #include <unordered_set>
 
 // #define _DEBUG_MOTION_
@@ -45,7 +46,7 @@ bool CNotebook::on_event(GdkEvent*)
 }
 
 /* Initialise notebook widget, loading style files etc. from data_path. */
-void CNotebook::Init(std::string data_path, bool use_highlight_proxy)
+void CNotebook::Init(std::string data_path, bool use_highlight_proxy, Glib::Variant<std::vector<snippet_t>> _snippets)
 {
 	sbuffer = get_source_buffer();
 
@@ -155,6 +156,9 @@ void CNotebook::Init(std::string data_path, bool use_highlight_proxy)
 	//tag_proximity->property_background_rgba().set_value(Gdk::RGBA("rgb(255,128,128)"));
 	
 	set_wrap_mode(Gtk::WRAP_WORD_CHAR);
+
+	snippets = _snippets;
+	signal_populate_popup().connect(sigc::mem_fun(this, &CNotebook::PopulateMenu));
 }
 
 void CNotebook::SetCursor(Glib::RefPtr<Gdk::Cursor> c)
@@ -1293,3 +1297,24 @@ bool CNotebook::on_deserialize(const Glib::RefPtr<Gtk::TextBuffer>& content_buff
 	return true;
 }
 
+void CNotebook::InsertSnippet(Glib::ustring snippet) {
+	get_source_buffer()->insert_at_cursor(snippet);
+}
+
+void CNotebook::PopulateMenu(Gtk::Menu* menu) {
+	Gtk::MenuItem* msnippets = Gtk::manage(new Gtk::MenuItem(_("Insert snippet")));
+	Gtk::Menu* smenu = Gtk::manage(new Gtk::Menu());
+	if (snippets.get_n_children() <= 0) {
+		msnippets->set_sensitive(false);
+	} else {
+		for(snippet_t snippet : snippets.get()) {
+			Gtk::MenuItem* msnippet = Gtk::manage(new Gtk::MenuItem(std::get<0>(snippet)));
+			msnippet->signal_activate().connect(sigc::bind(sigc::mem_fun(this, &CNotebook::InsertSnippet), std::get<1>(snippet)));
+			msnippet->show();
+			smenu->append(*msnippet);
+		}
+	}
+	msnippets->set_submenu(*smenu);
+	msnippets->show();
+	menu->append(*msnippets);
+}

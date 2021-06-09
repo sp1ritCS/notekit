@@ -35,7 +35,7 @@ class CNotebook : public Gsv::View
 public:
 	CNotebook();
 	
-	void Init(std::string data_path, bool use_highlight_proxy);
+	void Init(std::string data_path, bool use_highlight_proxy, Glib::Variant<std::vector<std::tuple<Glib::ustring, Glib::ustring>>> _snippets);
 	std::string GetHighlightProxyDir();
 	
 	Glib::RefPtr<Gio::SimpleActionGroup> actions;
@@ -121,6 +121,12 @@ public:
 	std::stack<Glib::RefPtr<Gtk::TextMark> > iter_stack;
 	Glib::RefPtr<Gtk::TextMark> PushIter(Gtk::TextIter i);
 	Gtk::TextIter PopIter();
+
+	typedef std::tuple<Glib::ustring, Glib::ustring> snippet_t;
+	Glib::Variant<std::vector<snippet_t>> snippets;
+protected:
+	void InsertSnippet(Glib::ustring snippet);
+	void PopulateMenu(Gtk::Menu* menu);
 };
 
 #endif

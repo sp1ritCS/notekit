@@ -39,8 +39,10 @@ CMainWindow::CMainWindow(const Glib::RefPtr<Gtk::Application>& app) : Gtk::Appli
 	tex::TeXRender *r = tex::LaTeX::parse(tex::utf82wide("\\fatalIfCmdConflict{false}"),1,1,1,0);
 	if(r) delete r;
 	#endif
-	
-	sview.Init(data_path, settings->get_boolean("syntax-highlighting"));
+
+	Glib::Variant<std::vector<CNotebook::snippet_t>> snippets;
+	settings->get_value("snippets", snippets);
+	sview.Init(data_path, settings->get_boolean("syntax-highlighting"), snippets);
 	
 	// make sure document is in place for tree expansion so we can set the selection
 	selected_document = settings->get_string("active-document");
@@ -251,21 +253,49 @@ void CMainWindow::RunAboutDiag() {
 	about.hide();
 }
 
+const Glib::RefPtr<Gtk::ListStore> CMainWindow::BuildSnippetStore(const PrefSnippetColRecord& cols) {
+	const Glib::RefPtr<Gtk::ListStore> store = Gtk::ListStore::create(cols);
+	Glib::Variant<std::vector<CNotebook::snippet_t>> snippets;
+	settings->get_value("snippets", snippets);
+	for(CNotebook::snippet_t snippet : snippets.get()) {
+		auto row = *store->append();
+		row[cols.s_col_name] = std::get<0>(snippet);
+		row[cols.s_col_snippet] = std::get<1>(snippet);
+	}
+	return store;
+}
+
 void CMainWindow::RunPreferenceDiag()
 {
 	Glib::RefPtr<Gtk::Builder> config_builder;
-	
+
 	config_builder = Gtk::Builder::create_from_file(data_path+"/data/preferences.glade");
 	Gtk::Dialog *dlg;
 	config_builder->get_widget("preferences",dlg); 
 	Gtk::CheckButton *use_headerbar, *use_highlight_proxy;
+	Gtk::ToolButton *add_snippet, *del_snippet;
+
 	config_builder->get_widget("base_path",dir); 
 	config_builder->get_widget("use_headerbar",use_headerbar);
 	config_builder->get_widget("use_highlight_proxy",use_highlight_proxy);
+	config_builder->get_widget("snippets", snippets);
+	config_builder->get_widget("add_snippet", add_snippet);
+	config_builder->get_widget("del_snippet", del_snippet);
+
 	dir->set_filename(settings->get_string("base-path"));
 	dir->signal_file_set().connect(sigc::mem_fun(this,&CMainWindow::UpdateBasePath));
 	settings->bind("csd", use_headerbar->property_active());
 	settings->bind("syntax-highlighting", use_highlight_proxy->property_active());
+
+	snippet_store = BuildSnippetStore(cols);
+	snippets->set_model(snippet_store);
+	snippets->append_column_editable("Name", cols.s_col_name);
+	snippets->append_column_editable("Snippet", cols.s_col_snippet);
+	snippet_store->signal_row_changed().connect(sigc::mem_fun(this,&CMainWindow::SnippetModelChange));
+	snippet_store->signal_row_deleted().connect(sigc::mem_fun(this,&CMainWindow::SnippetModelDel));
+	add_snippet->signal_clicked().connect(sigc::mem_fun(this,&CMainWindow::SnippetTreeAdd));
+	del_snippet->signal_clicked().connect(sigc::mem_fun(this,&CMainWindow::SnippetTreeDel));
+
 	dlg->run();
 	dlg->hide();
 }
@@ -273,6 +303,36 @@ void CMainWindow::RunPreferenceDiag()
 void CMainWindow::UpdateBasePath() {
 	settings->set_string("base-path", dir->get_filename());
 }
+
+void CMainWindow::SnippetTreeAdd() {
+	auto row = *snippet_store->append();
+	row[cols.s_col_name] = "New snippet";
+	row[cols.s_col_snippet] = "# The meaning of life";
+}
+void CMainWindow::SnippetTreeDel() {
+	auto sel = snippets->get_selection();
+	snippet_store->erase(sel->get_selected());
+}
+void CMainWindow::SnippetModelChange(const Gtk::TreeModel::Path& path, const Gtk::TreeModel::iterator iter) {
+	UpdateSettingStore();
+}
+void CMainWindow::SnippetModelDel(const Gtk::TreeModel::Path& path) {
+	UpdateSettingStore();
+}
+void CMainWindow::UpdateSettingStore() {
+	GVariantBuilder builder;
+	g_variant_builder_init(&builder, G_VARIANT_TYPE ("a(ss)"));
+
+	for (auto row : snippet_store->children()) {
+		Glib::ustring name = row[cols.s_col_name];
+		Glib::ustring snippet = row[cols.s_col_snippet];
+		g_variant_builder_add(&builder, "(ss)", name.c_str(), snippet.c_str());
+	}
+
+	GVariant *variant = g_variant_builder_end (&builder);
+	g_settings_set_value (settings->gobj(), "snippets", variant);
+}
+
 
 void CMainWindow::InitToolbar()
 {
@@ -644,6 +704,12 @@ void CMainWindow::SettingSidebarUpdate() {
 	if (!settings->get_boolean("zen")) nav_scroll.set_visible(state);
 	Glib::Variant<bool> mesh = Glib::Variant<bool>::create(state);
 	sidebar_action->set_state(mesh);
+}
+
+void CMainWindow::SettingSnippetsUpdate() {
+	Glib::Variant<std::vector<CNotebook::snippet_t>> snippets;
+	settings->get_value("snippets", snippets);
+	sview.snippets = snippets;
 }
 
 bool CMainWindow::on_idle()

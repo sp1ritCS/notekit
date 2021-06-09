@@ -9,6 +9,17 @@
 #include "notebook.h"
 #include "navigation.h"
 
+class PrefSnippetColRecord : public Gtk::TreeModelColumnRecord {
+public:
+	PrefSnippetColRecord() {
+		add(s_col_name);
+		add(s_col_snippet);
+	}
+
+	Gtk::TreeModelColumn<Glib::ustring> s_col_name;
+	Gtk::TreeModelColumn<Glib::ustring> s_col_snippet;
+};
+
 enum {
 	WND_ACTION_COLOR,
 	WND_ACTION_NEXT_NOTE,
@@ -65,7 +76,17 @@ protected:
 	void SettingChange(const Glib::ustring& key);
 	bool binit = true;
 	void UpdateBasePath();
-	
+
+	PrefSnippetColRecord cols;
+	Gtk::TreeView* snippets;
+	void SnippetModelChange(const Gtk::TreeModel::Path& path, const Gtk::TreeModel::iterator iter);
+	void SnippetModelDel(const Gtk::TreeModel::Path& path);
+	void SnippetTreeAdd();
+	void SnippetTreeDel();
+	Glib::RefPtr<Gtk::ListStore> snippet_store;
+	const Glib::RefPtr<Gtk::ListStore> BuildSnippetStore(const PrefSnippetColRecord& cols);
+	void UpdateSettingStore();
+
 	/* tree view on the left */
 	Gtk::ScrolledWindow nav_scroll;
 	Gtk::TreeView nav;
@@ -117,6 +138,7 @@ protected:
 	void SettingCsdUpdate();
 	void SettingZenUpdate();
 	void SettingSidebarUpdate();
+	void SettingSnippetsUpdate();
 
 	typedef std::map<const Glib::ustring, sigc::slot<void()>> settingmap_t;
 	settingmap_t settingmap {
@@ -125,8 +147,8 @@ protected:
 		{"colors", sigc::mem_fun(this,&CMainWindow::UpdateToolbarColors)},
 		{"csd", sigc::mem_fun(this,&CMainWindow::SettingCsdUpdate)},
 		{"zen", sigc::mem_fun(this,&CMainWindow::SettingZenUpdate)},
-		{"sidebar", sigc::mem_fun(this,&CMainWindow::SettingSidebarUpdate)}
+		{"sidebar", sigc::mem_fun(this,&CMainWindow::SettingSidebarUpdate)},
+		{"snippets", sigc::mem_fun(this,&CMainWindow::SettingSnippetsUpdate)}
 	};
 };
-
 #endif // MAINWINDOW_H
