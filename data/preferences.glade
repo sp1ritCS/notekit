@@ -272,6 +272,7 @@ This increases startup time and may result in markdown rendering failing if &lt;
                   <object class="GtkToolbar">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="icon_size">2</property>
                     <child>
                       <object class="GtkToolButton" id="add_snippet">
                         <property name="visible">True</property>
