@@ -54,10 +54,6 @@
 # This file must be used with "source bin/activate" *from bash*
 # you cannot run it directly
 
-configure() {
-	meson --prefix $VIRTUAL_ENV $@
-}
-
 deactivate () {
     # reset old environment variables
     if [ -n "${_OLD_VIRTUAL_PATH:-}" ] ; then
@@ -121,6 +117,10 @@ deactivate () {
 
 # unset irrelevant variables
 deactivate nondestructive
+
+configure() {
+	meson --prefix $VIRTUAL_ENV $@
+}
 
 VIRTUAL_ENV="$(git rev-parse --show-toplevel)/devel"
 VIRTUAL_ENV_LANG="c++"
